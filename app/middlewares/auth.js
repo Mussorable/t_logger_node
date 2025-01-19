@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const jwt = require("jsonwebtoken");
 
 const registerValidation = [
     body('email').isEmail().withMessage('Invalid email address'),
@@ -22,8 +23,23 @@ const validate = (req, res, next) => {
     next();
 };
 
+const validateToken = (req, res, next) => {
+    const token = req.cookies.token;
+
+    if (!token)
+        return res.status(401).json({ message: "No token provided" });
+
+    try {
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        next();
+    } catch(e) {
+        return res.status(401).json({ errors: e });
+    }
+};
+
 module.exports = {
     registerValidation,
     loginValidation,
     validate,
+    validateToken,
 };

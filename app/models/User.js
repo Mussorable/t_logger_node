@@ -11,6 +11,7 @@ const User = sequelize.define('User', {
     email: {
         type: Sequelize.STRING(64),
         allowNull: false,
+        unique: true,
         validate: {
             notEmpty: true,
             isEmail: true,
@@ -43,7 +44,11 @@ User.associate = (models) => {
     User.hasMany(models.Note, {
         foreignKey: 'userId',
         as: 'Notes'
-    })
+    });
+    User.hasMany(models.Truck, {
+       foreignKey: 'userId',
+       as: 'Truck'
+    });
 };
 
 module.exports = User;

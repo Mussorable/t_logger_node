@@ -9,6 +9,7 @@ const { sequelize } = require('./models');
 // ------
 
 const authRoutes = require('./routes/auth');
+const trucksRoutes = require('./routes/trucks');
 
 // ------
 
@@ -18,6 +19,11 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+
+// ------
+
+app.use('/auth', authRoutes);
+app.use('/trucks', trucksRoutes);
 
 // ------
 
