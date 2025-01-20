@@ -47,7 +47,7 @@ User.associate = (models) => {
     });
     User.hasMany(models.Truck, {
        foreignKey: 'userId',
-       as: 'Truck'
+       as: 'Trucks'
     });
 };
 
