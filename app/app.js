@@ -10,6 +10,7 @@ const { sequelize } = require('./models');
 
 const authRoutes = require('./routes/auth');
 const trucksRoutes = require('./routes/trucks');
+const notesRoutes = require('./routes/notes');
 
 // ------
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/trucks', trucksRoutes);
+app.use('/notes', notesRoutes);
 
 // ------
 

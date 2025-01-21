@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const { User, Truck } = require('../models');
 
 exports.add = async (req, res) => {
