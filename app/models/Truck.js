@@ -22,6 +22,14 @@ Truck.associate = (models) => {
         foreignKey: 'userId',
         as: 'User',
     });
+    Truck.hasMany(models.Record, {
+        foreignKey: 'truckId',
+        as: 'records',
+    });
+    Truck.hasMany(models.Legend, {
+       foreignKey: 'truckId',
+       as: 'legends',
+    });
 };
 
 module.exports = Truck;
