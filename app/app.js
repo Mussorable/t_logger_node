@@ -5,11 +5,14 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { sequelize } = require('./models');
+const cron = require('node-cron');
+const { Note } = require('./models');
 
 // ------
 
 const authRoutes = require('./routes/auth');
 const trucksRoutes = require('./routes/trucks');
+const notesRoutes = require('./routes/notes');
 
 // ------
 
@@ -24,6 +27,22 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/trucks', trucksRoutes);
+app.use('/notes', notesRoutes);
+
+// ------
+
+cron.schedule("0 1 * * *", async () => {
+    try {
+        console.log('Starting daily notes deleting...');
+        await Note.destroy({ where: {} });
+        console.log('Notes deleted successfully.');
+    } catch(e) {
+        console.error('Error while running cron', e);
+    }
+}, {
+    scheduled: true,
+    timezone: 'Europe/Warsaw'
+});
 
 // ------
 

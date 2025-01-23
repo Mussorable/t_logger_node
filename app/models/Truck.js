@@ -19,8 +19,16 @@ const Truck = sequelize.define('Truck', {
 
 Truck.associate = (models) => {
     Truck.belongsTo(models.User, {
-        foreignKey: 'id',
+        foreignKey: 'userId',
         as: 'User',
+    });
+    Truck.hasMany(models.Record, {
+        foreignKey: 'truckId',
+        as: 'records',
+    });
+    Truck.hasMany(models.Legend, {
+       foreignKey: 'truckId',
+       as: 'legends',
     });
 };
 

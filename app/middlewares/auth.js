@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator');
 const jwt = require("jsonwebtoken");
+const { User } = require("../models");
 
 const registerValidation = [
     body('email').isEmail().withMessage('Invalid email address'),
@@ -23,14 +24,25 @@ const validate = (req, res, next) => {
     next();
 };
 
-const validateToken = (req, res, next) => {
+const validateToken = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token)
         return res.status(401).json({ message: "No token provided" });
 
     try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        const decodedRequestToken = jwt.verify(token, process.env.JWT_SECRET);
+        const email = decodedRequestToken.email || undefined;
+
+        const existedUser = await User.findOne({ where: { email } });
+
+        if (!existedUser)
+            return res.status(401).json({
+                errors: [{ message: 'User not found' }]
+            });
+
+        req.user = existedUser;
+
         next();
     } catch(e) {
         return res.status(401).json({ errors: e });
