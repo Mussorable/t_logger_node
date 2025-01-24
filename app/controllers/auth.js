@@ -11,7 +11,8 @@ exports.register = async (req, res) => {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({
-                errors: [{message: "User already exist"}]
+                status: "error",
+                message: "User already exist"
             });
         }
 
@@ -29,11 +30,13 @@ exports.register = async (req, res) => {
         await user.save();
 
         return res.status(200).json({
+            status: "success",
             message: "User successfully registered",
             token: token,
         });
     } catch(e) {
         return res.status(400).json({
+            status: "error",
             errors: e,
             message: "Error while creating user",
         })
@@ -46,14 +49,16 @@ exports.login = async (req, res) => {
         const existingUser = await User.findOne({ where: { email } });
         if (!existingUser) {
             return res.status(400).json({
-                errors: [{message: "User does not exist"}]
+                status: "error",
+                message: "User does not exist"
             });
         }
 
         const isPasswordValid = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordValid) {
             return res.status(400).json({
-                errors: [{message: "Password is incorrect"}]
+                status: "error",
+                message: "Password is incorrect"
             });
         }
 
@@ -69,9 +74,13 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: 'strict',
         })
-        return res.status(200).json({ message: "Logged in successfully" });
+        return res.status(200).json({
+            status: "success",
+            message: "Logged in successfully",
+        });
     } catch(e) {
         return res.status(400).json({
+            status: "error",
             errors: e,
             message: "Error while logging in",
         })

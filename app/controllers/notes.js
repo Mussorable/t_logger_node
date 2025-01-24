@@ -3,7 +3,7 @@ const { User, Note} = require('../models');
 exports.add = async (req, res) => {
     try {
         const { email } = req.user;
-        const { message, isImportant } = req.body;
+        const { noteMessage, isImportant } = req.body;
 
         const user = await User.findOne({
             where: { email },
@@ -11,17 +11,24 @@ exports.add = async (req, res) => {
         });
         if (!user) {
             return res.status(401).send({
-                errors: [{ message: 'User not found' }]
+                status: 'error',
+                message: 'User not found',
             });
         }
 
         const newNote = await Note.create({
-            message,
+            noteMessage,
             isImportant,
             userId: user.id,
         });
 
-        return res.status(201).json(newNote);
+        const response = {
+            ...newNote.toJSON(),
+            status: 'success',
+            message: 'Note added'
+        };
+
+        return res.status(201).json(response);
     } catch(e) {
         return res.status(400).json({ errors: e });
     }

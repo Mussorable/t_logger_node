@@ -8,7 +8,7 @@ const Note = sequelize.define('Note', {
         primaryKey: true,
         allowNull: false,
     },
-    message: {
+    noteMessage: {
         type: Sequelize.TEXT,
         allowNull: false,
     },

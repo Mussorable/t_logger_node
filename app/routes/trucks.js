@@ -5,7 +5,7 @@ const trucksController = require('../controllers/trucks');
 const { validateToken } = require('../middlewares/auth');
 
 router.get('/validation', validateToken, (req, res) => {
-    res.status(200).json({ message: "you are logged in" });
+    res.status(200).json({ message: "you are logged in", status: 'success' });
 });
 
 router.get('/get-all', validateToken, trucksController.getAll);

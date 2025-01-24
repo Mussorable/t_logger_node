@@ -28,7 +28,7 @@ const validateToken = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token)
-        return res.status(401).json({ message: "No token provided" });
+        return res.status(401).json({ message: "No token provided", status: 'error' });
 
     try {
         const decodedRequestToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -38,14 +38,15 @@ const validateToken = async (req, res, next) => {
 
         if (!existedUser)
             return res.status(401).json({
-                errors: [{ message: 'User not found' }]
+                status: 'error',
+                message: 'Please register to use an application (Unauthorized)',
             });
 
         req.user = existedUser;
 
         next();
     } catch(e) {
-        return res.status(401).json({ errors: e });
+        return res.status(401).json({ errors: e, status: 'error', message: 'Error while trying to login' });
     }
 };
 

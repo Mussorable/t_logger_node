@@ -11,7 +11,8 @@ exports.add = async (req, res) => {
         });
         if (!user) {
             return res.status(401).send({
-                errors: [{ message: 'User not found' }]
+                status: 'error',
+                message: 'User not found',
             });
         }
 
@@ -20,7 +21,12 @@ exports.add = async (req, res) => {
             userId: user.id,
         });
 
-        const response = { ...newTruck.toJSON(), legends: [] };
+        const response = {
+            ...newTruck.toJSON(),
+            legends: [],
+            status: 'success',
+            message: 'Truck added',
+        };
 
         return res.status(201).json(response);
     } catch(e) {
@@ -59,7 +65,8 @@ exports.addRecord = async (req, res) => {
         });
         if (!truck) {
             return res.status(401).send({
-                errors: [{ message: 'Truck not found' }]
+                status: 'error',
+                message: 'Truck not found',
             })
         }
 
@@ -71,7 +78,13 @@ exports.addRecord = async (req, res) => {
             truckId: id,
         });
 
-        return res.status(201).json(newRecord);
+        const response = {
+            ...newRecord.toJSON(),
+            status: 'success',
+            message: 'Record added',
+        }
+
+        return res.status(201).json(response);
     } catch(e) {
         return res.status(400).json({ errors: e });
     }
@@ -86,7 +99,8 @@ exports.getTruckNotes = async (req, res) => {
         });
         if (!truck) {
             return res.status(401).send({
-                errors: [{ message: 'Truck not found' }]
+                status: 'error',
+                message: 'Truck not found',
             })
         }
 
