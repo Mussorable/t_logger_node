@@ -25,10 +25,12 @@ Truck.associate = (models) => {
     Truck.hasMany(models.Record, {
         foreignKey: 'truckId',
         as: 'records',
+        onDelete: 'CASCADE',
     });
     Truck.hasMany(models.Legend, {
-       foreignKey: 'truckId',
-       as: 'legends',
+        foreignKey: 'truckId',
+        as: 'legends',
+        onDelete: 'CASCADE',
     });
 };
 

@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { sequelize } = require('./models');
 const cron = require('node-cron');
-const { Note } = require('./models');
+const { Note, Record } = require('./models');
 
 // ------
 
@@ -33,9 +33,10 @@ app.use('/notes', notesRoutes);
 
 cron.schedule("0 1 * * *", async () => {
     try {
-        console.log('Starting daily notes deleting...');
+        console.log('Starting daily cleanup...');
         await Note.destroy({ where: {} });
-        console.log('Notes deleted successfully.');
+        await Record.destroy({ where: { type: "DONE" } });
+        console.log('Cleanup finished successfully.');
     } catch(e) {
         console.error('Error while running cron', e);
     }
