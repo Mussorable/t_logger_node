@@ -6,6 +6,6 @@ const { registerValidation, loginValidation, validate} = require('../middlewares
 
 router.post('/register', registerValidation, validate, authController.register);
 router.post('/login', loginValidation, validate, authController.login);
-router.post('/logout', (req, res) => {});
+router.post('/logout', authController.logout);
 
 module.exports = router;

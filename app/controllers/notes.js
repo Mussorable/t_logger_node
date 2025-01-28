@@ -40,7 +40,7 @@ exports.add = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { message, isImportant } = req.body;
+        const { noteMessage, isImportant } = req.body;
 
         const note = await Note.findByPk(id);
         if (!note) {
@@ -49,14 +49,24 @@ exports.update = async (req, res) => {
             });
         }
 
-        note.message = message;
+        note.noteMessage = noteMessage;
         note.isImportant = isImportant;
 
         await note.save();
 
-        return res.status(200).json(note);
+        const response = {
+            ...note.toJSON(),
+            status: 'warning',
+            message: 'Note updated'
+        }
+
+        return res.status(200).json(response);
     } catch(e) {
-        return res.status(400).json({ errors: e });
+        return res.status(400).json({
+            status: 'error',
+            message: 'Error while updating note',
+            errors: e
+        });
     }
 };
 exports.delete = async (req, res) => {
