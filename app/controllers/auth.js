@@ -7,11 +7,19 @@ exports.register = async (req, res) => {
     const { email, password, fname, sname } = req.body;
 
     try {
+        if (!email || !password) {
+            return res.status(400).send({
+                status: "error",
+                message: "Email and password is required",
+            });
+        }
+
         // Return an error if user with current email already exists
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({
-                errors: [{message: "User already exist"}]
+                status: "error",
+                message: "User already exist"
             });
         }
 
@@ -29,11 +37,12 @@ exports.register = async (req, res) => {
         await user.save();
 
         return res.status(200).json({
+            status: "success",
             message: "User successfully registered",
-            token: token,
         });
     } catch(e) {
         return res.status(400).json({
+            status: "error",
             errors: e,
             message: "Error while creating user",
         })
@@ -46,14 +55,16 @@ exports.login = async (req, res) => {
         const existingUser = await User.findOne({ where: { email } });
         if (!existingUser) {
             return res.status(400).json({
-                errors: [{message: "User does not exist"}]
+                status: "error",
+                message: "User does not exist"
             });
         }
 
         const isPasswordValid = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordValid) {
             return res.status(400).json({
-                errors: [{message: "Password is incorrect"}]
+                status: "error",
+                message: "Password is incorrect"
             });
         }
 
@@ -69,11 +80,34 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: 'strict',
         })
-        return res.status(200).json({ message: "Logged in successfully" });
+        return res.status(200).json({
+            status: "success",
+            message: "Logged in successfully",
+        });
     } catch(e) {
         return res.status(400).json({
+            status: "error",
             errors: e,
             message: "Error while logging in",
         })
+    }
+};
+exports.logout = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'strict',
+        });
+
+        return res.status(200).json({
+            status: "success",
+            message: "Successfully logged out",
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: "error",
+            message: "An error occurred while logging out",
+        });
     }
 };

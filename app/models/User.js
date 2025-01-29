@@ -43,11 +43,13 @@ const User = sequelize.define('User', {
 User.associate = (models) => {
     User.hasMany(models.Note, {
         foreignKey: 'userId',
-        as: 'Notes'
+        as: 'Notes',
+        onDelete: 'CASCADE',
     });
     User.hasMany(models.Truck, {
        foreignKey: 'userId',
-       as: 'Trucks'
+       as: 'Trucks',
+        onDelete: 'CASCADE',
     });
 };
 
